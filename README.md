@@ -14,6 +14,12 @@ The program captures the X11 root window, scales it to 240x240, converts colors 
 
 ---
 
+![20260211_203803](https://github.com/user-attachments/assets/39aecac0-c8d6-44fd-9231-fee0193ed438)
+
+![20260211_203821](https://github.com/user-attachments/assets/c12ff97e-c2f3-4aa9-8ee2-1cc81dd64005)
+
+---
+
 # Requirements
 ## Hardware
 - Raspberry Pi (tested on Raspberry Pi 4 / 400)
