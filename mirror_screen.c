@@ -8,14 +8,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-// Definições de Hardware
+// Hardware Definitions
 #define DISP_W 240
 #define DISP_H 240
 #define PIN_DC 24
 #define PIN_RST 22
 #define PIN_BL 17
 
-// Buffers de Frame
+// Frame Buffers
 uint16_t curr_fb[DISP_W * DISP_H] __attribute__((aligned(32)));
 uint16_t last_fb[DISP_W * DISP_H] __attribute__((aligned(32)));
 
@@ -48,13 +48,13 @@ void init_st7789() {
     st7789_cmd(0x01); bcm2835_delay(150); // Software Reset
     st7789_cmd(0x11); bcm2835_delay(150); // Sleep Out
 
-    // Importante: 0x55 define 16-bit color. Se estiver 0x05, pode triplicar a imagem.
+    // Important: 0x55 defines 16-bit color. If it's 0x05, you can triple the image size.
     st7789_cmd(0x3A); st7789_data(0x55); 
 
-    // Orientação: 0x00 é padrão. Se estiver invertido, tente 0x70 ou 0xC0
+    // Orientation: 0x00 is the default. If it's inverted, try 0x70 or 0xC0.
     st7789_cmd(0x36); st7789_data(0x00); 
 
-    st7789_cmd(0x21); // Inversão de Cor (comum em painéis IPS ST7789)
+    st7789_cmd(0x21); // Color Inversion (common in ST7789 IPS panels)
     st7789_cmd(0x13); // Normal Display Mode
     st7789_cmd(0x29); // Display ON
     bcm2835_delay(50);
@@ -64,7 +64,7 @@ int main() {
     if (!bcm2835_init()) return 1;
     
     bcm2835_spi_begin();
-    // Reduzi para 32MHz para maior estabilidade no RPi4
+    // Reduce it to 16MHz for greater stability on the RPi4.
     bcm2835_spi_set_speed_hz(16000000); 
     bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);
     
@@ -104,12 +104,12 @@ int main() {
                 uint32_t px = (x * attr.width) / DISP_W;
                 uint32_t p = line[px];
                 
-                // Extração RGB (Assume formato BGRX ou RGBX padrão do X11)
+                // RGB extraction (Assumes standard X11 BGRX or RGBX format)
                 uint8_t r = (p >> 16) & 0xFF; 
                 uint8_t g = (p >> 8) & 0xFF;
                 uint8_t b = p & 0xFF;
                 
-                // Conversão para RGB565 e troca de bytes (Big Endian para o SPI)
+                // Conversion to RGB565 and byte swapping (Big Endian for SPI)
                 uint16_t color = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
                 uint16_t final_color = (color >> 8) | (color << 8);
                 
@@ -130,14 +130,14 @@ int main() {
             int block_w = (x_max - x_min) + 1;
             
             for (int r = y_min; r <= y_max; r++) {
-                // Envia linha a linha da área alterada
+                // Send line by line from the changed area.
                 bcm2835_spi_transfern((char*)&curr_fb[r * DISP_W + x_min], block_w * 2);
             }
             memcpy(last_fb, curr_fb, sizeof(curr_fb));
         }
     }
 
-    // Cleanup (Opcional, o loop é infinito)
+    // Cleanup (Optional, the loop is infinite)
     XShmDetach(dpy, &shminfo);
     shmdt(shminfo.shmaddr);
     shmctl(shminfo.shmid, IPC_RMID, 0);
