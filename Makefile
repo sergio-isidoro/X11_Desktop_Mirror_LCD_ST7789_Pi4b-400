@@ -1,16 +1,16 @@
-# Nome do executável
+# Executable name
 TARGET = mirror_screen
 
-# Compilador
+# Compiler
 CC = gcc
 
-# Opções de compilação (O3 para otimização de performance)
+# Compilation options (O3 for performance optimization)
 CFLAGS = -Wall -O3
 
-# Bibliotecas necessárias
+# Required libraries
 LIBS = -lX11 -lXext -lbcm2835
 
-# O ficheiro fonte (ajuste se o nome for diferente)
+# The source file (adjust if the name is different)
 SRC = mirror_screen.c
 
 all: $(TARGET)
